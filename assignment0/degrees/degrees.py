@@ -66,7 +66,6 @@ def main():
     if source is None:
         sys.exit("Person not found.")
     target = person_id_for_name(input("Name: "))
-    target = person_id_for_name("Tom Hanks")
     if target is None:
         sys.exit("Person not found.")
 
@@ -93,7 +92,7 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
     # Initialize frontier with starting node
-    start = Node(state = source, parent = None, action = None)
+    start = Node(state = source, parent = None, action = None, depth = 0)
     frontier = QueueFrontier()
     frontier.add(start)
 
@@ -124,7 +123,7 @@ def shortest_path(source, target):
 
             if not frontier.contains_state(state) and state not in explored:
 
-                child = Node(state = state, parent = current, action = action)
+                child = Node(state = state, parent = current, action = action, depth = current.depth + 1)
 
                 # Check if we are at the target
                 if state == target:
@@ -139,8 +138,14 @@ def shortest_path(source, target):
                     else:
                         if len(cells) < len(optimal_solution):
                             optimal_solution = cells
+
+                # If not at target
+                if optimal_solution:
+                    if child.depth < len(optimal_solution):
+                        frontier.add(child)
                 else:
                     frontier.add(child)
+
 
 
 def person_id_for_name(name):
